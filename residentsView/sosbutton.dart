@@ -1,49 +1,5 @@
 import 'package:flutter/material.dart';
 
-class SOSButtonPage extends StatefulWidget {
-  @override
-  _SOSButtonPageState createState() => _SOSButtonPageState();
-}
-
-class _SOSButtonPageState extends State<SOSButtonPage> {
-  String? name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('SOS Button'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (name != null)
-              Text(
-                '$name - Zone 7',
-                style: TextStyle(fontSize: 24),
-              )
-            else
-              Text(
-                'No SOS activated',
-                style: TextStyle(fontSize: 24),
-              ),
-            SizedBox(height: 20),
-            SOSButton(
-              holdDuration: Duration(seconds: 5),
-              onHoldComplete: (residentName) {
-                setState(() {
-                  name = residentName;
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class SOSButton extends StatefulWidget {
   final Duration holdDuration;
   final void Function(String) onHoldComplete;

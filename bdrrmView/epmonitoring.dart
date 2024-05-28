@@ -1,4 +1,3 @@
-import 'package:adet/residentsView/sosbutton.dart'; // Adjust the import path as necessary
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -11,11 +10,24 @@ class EpMonitoring extends StatefulWidget {
 class _EpMonitoringState extends State<EpMonitoring> {
   String? status;
   String? dateTime;
+  List<String> residents = [];
 
   void updateStatus(String newStatus) {
     setState(() {
       status = newStatus;
       dateTime = DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now());
+    });
+  }
+
+  void addResident(String name) {
+    setState(() {
+      residents.add(name);
+    });
+  }
+
+  void removeResidents() {
+    setState(() {
+      residents.clear();
     });
   }
 
@@ -25,14 +37,11 @@ class _EpMonitoringState extends State<EpMonitoring> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 30.0, top: 20.0),
-          child: IconButton(
-            icon: Icon(Icons.menu, size: 40.0),
-            onPressed: () {
-              // Add functionality for the menu icon
-            },
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.menu, size: 40.0),
+          onPressed: () {
+            // Add functionality for the menu icon
+          },
         ),
       ),
       extendBodyBehindAppBar: true,
@@ -80,6 +89,53 @@ class _EpMonitoringState extends State<EpMonitoring> {
                         color: Color(0xFFCFECF7),
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: residents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: Text(
+                                    residents[index],
+                                    style: GoogleFonts.inter(
+                                      textStyle: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: ElevatedButton(
+                                onPressed: removeResidents,
+                                child: Text(
+                                  'Reset Residents',
+                                  style: GoogleFonts.inter(
+                                    textStyle: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(150, 40),
+                                  backgroundColor: Colors.white,
+                                  side: BorderSide(color: Color(0xFF1C96C5)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -105,7 +161,8 @@ class _EpMonitoringState extends State<EpMonitoring> {
                       padding: const EdgeInsets.only(left: 10, top: 20),
                       child: TextSection(
                         title: 'Evacuation Process Monitoring',
-                        subTitle: 'San Fernando, Camarines Sur, Barangay Bonifacio',
+                        subTitle:
+                            'San Fernando, Camarines Sur, Barangay Bonifacio',
                       ),
                     ),
                   ],
@@ -139,43 +196,54 @@ class _EpMonitoringState extends State<EpMonitoring> {
                                     ),
                                   ),
                                 ),
-                                if (status != null && dateTime != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
-                                    child: Text(
-                                      '$status\n$dateTime',
-                                      style: GoogleFonts.inter(
-                                        textStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                               ],
                             ),
                           ),
+                          Positioned(
+                            top: 70,
+                            left: 15,
+                            child: Container(
+                              width: 550,
+                              height: 370,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFCFECF7),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Stack(
+                                children: [
+                                  if (status != null)
+                                    Center(
+                                      child: Text(
+                                        status!,
+                                        style: GoogleFonts.inter(
+                                          textStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 40,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (dateTime != null)
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 10,
+                                      child: Text(
+                                        dateTime!,
+                                        style: GoogleFonts.inter(
+                                          textStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                    Positioned(
-                      top: 70, // Adjusted the top position of the first square
-                      left: 15, // Adjusted the left position of the first square
-                      child: Container(
-                        width: 550,
-                        height: 370,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFCFECF7),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: SOSButton(
-                          holdDuration: Duration(seconds: 5),
-                          onHoldComplete: (String message) {
-                            setState(() {
-                              status = message;
-                            });
-                          },
-                        ),
                       ),
                     ),
                   ],
@@ -185,7 +253,7 @@ class _EpMonitoringState extends State<EpMonitoring> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 30), // Add some space to push the buttons to the right
+                    SizedBox(width: 30),
                     ElevatedButton.icon(
                       onPressed: () {
                         // Add functionality for the back button
@@ -193,7 +261,7 @@ class _EpMonitoringState extends State<EpMonitoring> {
                       icon: Icon(Icons.arrow_back, color: Colors.black),
                       label: Text(''),
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(60, 60), // Set height and width
+                        minimumSize: Size(60, 60),
                         backgroundColor: Colors.transparent,
                         elevation: 0,
                         side: BorderSide(color: Colors.transparent),
@@ -203,7 +271,7 @@ class _EpMonitoringState extends State<EpMonitoring> {
                     ElevatedButton(
                       onPressed: () => updateStatus('In Progress'),
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(150, 60), // Set width and height
+                        minimumSize: Size(150, 60),
                         backgroundColor: Colors.white,
                         side: BorderSide(color: Color(0xFF1C96C5)),
                         shape: RoundedRectangleBorder(
@@ -212,14 +280,19 @@ class _EpMonitoringState extends State<EpMonitoring> {
                       ),
                       child: Text(
                         'In Progress',
-                        style: TextStyle(color: Color(0xFF1C96C5)),
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            color: Color(0xFF1C96C5),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () => updateStatus('Done'),
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(150, 60), // Set width and height
+                        minimumSize: Size(150, 60),
                         backgroundColor: Colors.white,
                         side: BorderSide(color: Color(0xFF1C96C5)),
                         shape: RoundedRectangleBorder(
@@ -228,7 +301,12 @@ class _EpMonitoringState extends State<EpMonitoring> {
                       ),
                       child: Text(
                         'Done',
-                        style: TextStyle(color: Color(0xFF1C96C5)),
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            color: Color(0xFF1C96C5),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -246,7 +324,8 @@ class TextSection extends StatelessWidget {
   final String title;
   final String subTitle;
 
-  const TextSection({Key? key, required this.title, required this.subTitle}) : super(key: key);
+  const TextSection({Key? key, required this.title, required this.subTitle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +342,7 @@ class TextSection extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 0), // Spacing between the title and subtitle
+        SizedBox(height: 0),
         Text(
           subTitle,
           style: GoogleFonts.inter(
@@ -283,4 +362,3 @@ void main() {
     home: EpMonitoring(),
   ));
 }
-
