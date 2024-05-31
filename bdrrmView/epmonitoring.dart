@@ -37,12 +37,7 @@ class _EpMonitoringState extends State<EpMonitoring> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu, size: 40.0),
-          onPressed: () {
-            // Add functionality for the menu icon
-          },
-        ),
+        leading: Container(), // Removed the menu icon
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
